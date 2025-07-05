@@ -1,0 +1,58 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Editor folders
+.vscode/
+.idea/
+
+# Jupyter / IPython
+.ipynb_checkpoints
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment & secret files
+.env
+.env.*
+
+# Docker
+*.pid
+*.tar
+docker-compose.override.yml
+
+# Build / dist
+build/
+dist/
+*.egg-info/
+
+# GitHub Actions
+.github/*.bak
+.github/*~*
+
+# Model files (optional)
+# Uncomment below if you don't want to track the model in Git
+# vhm_center.pt
+
+# Pytest / coverage
+htmlcov/
+.coverage
+.cache
+pytest_cache/
+
+# Version file (optional)
+# Uncomment to ignore if managed only by GitHub Actions
+# VERSION
