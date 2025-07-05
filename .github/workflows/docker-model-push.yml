@@ -6,6 +6,7 @@ on:
       - 'vhm_center.pt'    # Only run workflow when model file changes
     branches:
       - main
+  workflow_dispatch:  #  Add this to enable manual runs
 
 jobs:
   build-and-push:
