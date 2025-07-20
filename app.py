@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from transformers import BertTokenizerFast, BertForSequenceClassification, BertConfig
 import torch
+import data_validation.parser as parser
+
 
 app = FastAPI()
 
@@ -22,6 +24,7 @@ except Exception as e:
 try:
     config = BertConfig.from_json_file("config.json")
 except Exception as e:
+    print (f"{e}")
     raise RuntimeError(f"Failed to load model config: {e}")
 
 # Step 3: Initialize model and load state_dict
@@ -45,6 +48,7 @@ except Exception as e:
 class InputText(BaseModel):
     text: str
 
+
 # Health check
 @app.get("/")
 def read_root():
@@ -54,11 +58,19 @@ def read_root():
 @app.post("/predict")
 def predict(req: InputText):
     try:
+        # Validate log format before prediction
+        _ = parser.parse_log_line(req.text)
+
+        # Proceed to prediction
         inputs = tokenizer(req.text, return_tensors="pt", truncation=True, padding=True, max_length=512)
         with torch.no_grad():
             outputs = model(**inputs)
         logits = outputs.logits
         prediction = torch.argmax(logits, dim=1).item()
         return {"label": prediction, "logits": logits.tolist()}
+    
+    except ValueError as ve:
+        raise HTTPException(status_code=422, detail=f"Invalid log format: {str(ve)}")
+    
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
